@@ -5,7 +5,7 @@ namespace Aperture.Interfaces;
 /// <summary>
 /// A Source-Engine C++ interface.
 /// </summary>
-public class SourceInterface
+public class SourceInterface : IDisposable
 {
     public string InterfaceName { get; }
     public string ModuleName { get; }
@@ -25,6 +25,9 @@ public class SourceInterface
 
         VTable = VTable.GetVTable(Handle);
     }
+
+    /// <inheritdoc/>
+    public void Dispose() => NativeLibrary.Free(Handle);
     
     private void CreateInstance()
     {
@@ -32,6 +35,6 @@ public class SourceInterface
         IntPtr func = NativeLibrary.GetExport(lib, "CreateInterface");
 
         var createInterface = Marshal.GetDelegateForFunctionPointer<CreateInterfaceDelegate>(func);
-        Handle = createInterface(InterfaceName, IntPtr.Zero);
+        Handle = createInterface(InterfaceName, 0);
     }
 }
