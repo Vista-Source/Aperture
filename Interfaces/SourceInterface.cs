@@ -23,10 +23,12 @@ public class SourceInterface : IDisposable
         var methodMetadata = context?.Test?.TestCase?.TestMethod;
 
         if (methodMetadata == null)
-            throw new Exception("SourceInterface must be instantiated within an active xUnit v3 test.");
+            throw new Exception("SourceInterface must be instantiated within an active Aperture test.");
 
         InterfaceName = interfaceName;
         ModuleName = methodMetadata.Traits["ModuleName"].First();
+        if (string.IsNullOrEmpty(ModuleName))
+            throw new Exception("SourceInterface must be instantiated within an active Aperture test.");
 
         CreateInstance();
 

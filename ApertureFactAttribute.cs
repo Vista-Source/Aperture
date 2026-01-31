@@ -9,11 +9,9 @@ public class ApertureFactAttribute : FactAttribute, ITraitAttribute
     public string ModuleName { get; }
 
     /// <summary> Initializes a new instance of the <see cref="ApertureFactAttribute"/> class. </summary>
-    public ApertureFactAttribute(string moduleName) : base()
-    {
-        ModuleName = moduleName;
-    }
-    
+    /// <param name="moduleName"> The name of the Source Engine module to load during this test. </param>
+    public ApertureFactAttribute(string moduleName) : base() => ModuleName = moduleName;
+
     /// <inheritdoc/>
     public IReadOnlyCollection<KeyValuePair<string, string>> GetTraits()
     {
