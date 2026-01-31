@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Xunit;
 
 namespace Aperture.Interfaces;
 
@@ -14,6 +15,23 @@ public class SourceInterface : IDisposable
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     delegate IntPtr CreateInterfaceDelegate([MarshalAs(UnmanagedType.LPStr)] string name, IntPtr returnCode);
+
+    /// <summary> Initializes a new instance of the <see cref="SourceInterface"/> class. </summary>
+    public SourceInterface(string interfaceName)
+    {
+        var context = TestContext.Current;
+        var methodMetadata = context?.Test?.TestCase?.TestMethod;
+
+        if (methodMetadata == null)
+            throw new Exception("SourceInterface must be instantiated within an active xUnit v3 test.");
+
+        InterfaceName = interfaceName;
+        ModuleName = methodMetadata.Traits["ModuleName"].First();
+
+        CreateInstance();
+
+        VTable = VTable.GetVTable(Handle);
+    }
 
     /// <summary> Initializes a new instance of the <see cref="SourceInterface"/> class. </summary>
     public SourceInterface(string interfaceName, string moduleName)
