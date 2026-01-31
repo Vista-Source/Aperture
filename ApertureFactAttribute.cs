@@ -16,10 +16,11 @@ public class ApertureFactAttribute : FactAttribute, ITraitAttribute
 
     /// <summary> Initializes a new instance of the <see cref="ApertureFactAttribute"/> class. </summary>
     /// <param name="moduleName"> The name of the Source Engine module to load during this test. </param>
-    public ApertureFactAttribute(string moduleName, int appID = 243750) : base()
+    /// <param name="engineAppID"> The application ID of the Source Engine branch to test against. </param>
+    public ApertureFactAttribute(string moduleName, int engineAppID = 243750) : base()
     {
         ModuleName = moduleName;
-        AppID = appID;
+        AppID = engineAppID;
     }
 
     /// <inheritdoc/>
