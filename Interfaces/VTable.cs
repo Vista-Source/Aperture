@@ -15,6 +15,8 @@ public unsafe class VTable
     public VTable(void** vtable) => Handle = vtable;
 
     /// <summary> Gets a function from the VTable. </summary>
+    /// <typeparam name="TDelegate"> The type of the function. </typeparam>
+    /// <param name="index"> The index of the function in the VTable (order of appearance, including inherited virtual methods). </param>
     public TDelegate GetFunction<TDelegate>(int index) where TDelegate : Delegate => Marshal.GetDelegateForFunctionPointer<TDelegate>((nint)Handle[index]);
 
     /// <summary> Gets the VTable from a C++ instance. </summary>
