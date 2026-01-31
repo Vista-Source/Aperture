@@ -1,5 +1,5 @@
 # Aperture
-An xUnit extension for testing parity between C# and C++ modules.
+An xUnit extension for testing parity between C# and C++ Source Engine modules.
 
 > [!WARNING]
 > **This is a low-level library.** Abstractions are in place, but a solid understanding of vtables, delegates, and Source Engine internals will help.
