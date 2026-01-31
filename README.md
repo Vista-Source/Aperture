@@ -22,7 +22,7 @@ public class UnitTest1
     [Fact]
     public void Test1()
     {
-        var input = new SourceInterface("InputSystemVersion001", @"D:\SteamLibrary\steamapps\common\Source SDK Base 2013 Multiplayer\bin\inputsystem.dll");
+        var input = new SourceInterface("InputSystemVersion001", "inputsystem.dll");
 
         var attachToWindow = input.VTable.GetFunction<AttachToWindowDelegate>(5);
         IntPtr curWindow = Process.GetCurrentProcess().MainWindowHandle;
