@@ -9,12 +9,11 @@ public class SourceInterface
 {
     public string InterfaceName { get; }
     public string ModuleName { get; }
-
-    // The handle to the C++ instance
-    private IntPtr handle;
+    public IntPtr Handle { get; private set; }
+    public VTable VTable { get; }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    delegate IntPtr CreateInterfaceDelegate(string name, int returnCode);
+    delegate IntPtr CreateInterfaceDelegate([MarshalAs(UnmanagedType.LPStr)] string name, IntPtr returnCode);
 
     /// <summary> Initializes a new instance of the <see cref="SourceInterface"/> class. </summary>
     public SourceInterface(string interfaceName, string moduleName)
@@ -23,6 +22,8 @@ public class SourceInterface
         ModuleName = moduleName;
 
         CreateInstance();
+
+        VTable = VTable.GetVTable(Handle);
     }
     
     private void CreateInstance()
@@ -31,6 +32,6 @@ public class SourceInterface
         IntPtr func = NativeLibrary.GetExport(lib, "CreateInterface");
 
         var createInterface = Marshal.GetDelegateForFunctionPointer<CreateInterfaceDelegate>(func);
-        handle = createInterface(InterfaceName, 0);
+        Handle = createInterface(InterfaceName, IntPtr.Zero);
     }
 }
