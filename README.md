@@ -8,7 +8,7 @@ An xUnit extension for testing parity between C# and C++ Source Engine modules.
 Aperture allows Vista Source to test it's C# implementations of Source Engine modules against the original C++ implementations. This allows us to ensure Vista modules remain behaviourally consistent with the SDK.
 
 ## Usage
-Aperture provides multiple different ways of interfacing with Source Engine modules:
+Aperture provides multiple different ways of interfacing with Source Engine modules. All tests that use Aperture must be marked with the `[ApertureFact]` attribute.
 
 ### Interfaces
 Source Engine modules expose [Interfaces](https://developer.valvesoftware.com/wiki/Category:Interfaces) that allow running functionality from said module from the outside. The vast majority of Source logic is contained within an interface, and as such they're vital to parity testing. To test interface logic, we use the `SourceInterface` class.
@@ -19,10 +19,10 @@ public class UnitTest1
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     delegate void AttachToWindowDelegate(IntPtr thisPtr, IntPtr window);
 
-    [Fact]
+    [ApertureFact("inputsystem")]
     public void Test1()
     {
-        var input = new SourceInterface("InputSystemVersion001", "inputsystem.dll");
+        var input = new SourceInterface("InputSystemVersion001");
 
         var attachToWindow = input.VTable.GetFunction<AttachToWindowDelegate>(5);
         IntPtr curWindow = Process.GetCurrentProcess().MainWindowHandle;
