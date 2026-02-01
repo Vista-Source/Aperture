@@ -39,6 +39,9 @@ public class IFileSystem : SourceInterface
     delegate void RemoveSearchPathDelegate(IntPtr thisPtr, [MarshalAs(UnmanagedType.LPStr)] string path, [MarshalAs(UnmanagedType.LPStr)] string pathID);
 
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    delegate void RemoveAllSearchPathsDelegate(IntPtr thisPtr);
+
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     delegate void RemoveSearchPathsDelegate(IntPtr thisPtr, [MarshalAs(UnmanagedType.LPStr)] string pathID);
 
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
@@ -56,37 +59,44 @@ public class IFileSystem : SourceInterface
     /// <inheritdoc/>
     public IFileSystem(string interfaceName) : base(interfaceName) { }
 
-    private const int INIT_INDEX = 3;
-    private const int MOUNT_INDEX = 6;
-    private const int ADD_SEARCH_PATH_INDEX = 7;
-    private const int RELATIVE_TO_FULL_INDEX = 12;
+    private enum VTableIndex
+    {
+        Init = 3,
+        Shutdown,
+        IsSteam,
+        MountSteamContent = 6,
+        AddSearchPath,
+        RemoveSearchPath,
+        RemoveAllSearchPaths,
+        RemoveSearchPaths,
+        MarkPathIDByRequestOnly,
+        RelativePathToFullPath = 12,
+        GetSearchPath
+    }
 
 
-    public int Init() => VTable.GetFunction<InitDelegate>(INIT_INDEX)(Handle);
+    public int Init() => VTable.GetFunction<InitDelegate>((int)VTableIndex.Init)(Handle);
 
-    public void Shutdown() => VTable.GetFunction<ShutdownDelegate>(INIT_INDEX + 1)(Handle);
+    public void Shutdown() => VTable.GetFunction<ShutdownDelegate>((int)VTableIndex.Shutdown)(Handle);
 
-    public bool IsSteam() => VTable.GetFunction<IsSteamDelegate>(INIT_INDEX + 2)(Handle);
+    public bool IsSteam() => VTable.GetFunction<IsSteamDelegate>((int)VTableIndex.IsSteam)(Handle);
 
-    public FilesystemMountRetval MountSteamContent(int extraAppID = -1) =>
-        (FilesystemMountRetval)VTable.GetFunction<MountSteamContentDelegate>(MOUNT_INDEX)(Handle, extraAppID);
+    public FilesystemMountRetval MountSteamContent(int extraAppID = -1) => (FilesystemMountRetval)VTable.GetFunction<MountSteamContentDelegate>((int)VTableIndex.MountSteamContent)(Handle, extraAppID);
 
-    public void AddSearchPath(string path, string pathID, SearchPathAdd addType = SearchPathAdd.PATH_ADD_TO_TAIL) =>
-        VTable.GetFunction<AddSearchPathDelegate>(ADD_SEARCH_PATH_INDEX)(Handle, path, pathID, (int)addType);
+    public void AddSearchPath(string path, string pathID, SearchPathAdd addType = SearchPathAdd.PATH_ADD_TO_TAIL) => VTable.GetFunction<AddSearchPathDelegate>((int)VTableIndex.AddSearchPath)(Handle, path, pathID, (int)addType);
 
-    public void RemoveSearchPath(string path, string pathID) =>
-        VTable.GetFunction<RemoveSearchPathDelegate>(ADD_SEARCH_PATH_INDEX + 1)(Handle, path, pathID);
+    public void RemoveSearchPath(string path, string pathID) => VTable.GetFunction<RemoveSearchPathDelegate>((int)VTableIndex.RemoveSearchPath)(Handle, path, pathID);
 
-    public void RemoveSearchPaths(string pathID) =>
-        VTable.GetFunction<RemoveSearchPathsDelegate>(ADD_SEARCH_PATH_INDEX + 2)(Handle, pathID);
+    public void RemoveAllSearchPaths() => VTable.GetFunction<RemoveAllSearchPathsDelegate>((int)VTableIndex.RemoveAllSearchPaths)(Handle);
 
-    public void MarkPathIDByRequestOnly(string pathID, bool requestOnly) =>
-        VTable.GetFunction<MarkPathIDByRequestOnlyDelegate>(ADD_SEARCH_PATH_INDEX + 3)(Handle, pathID, requestOnly);
+    public void RemoveSearchPaths(string pathID) => VTable.GetFunction<RemoveSearchPathsDelegate>((int)VTableIndex.RemoveSearchPaths)(Handle, pathID);
+
+    public void MarkPathIDByRequestOnly(string pathID, bool requestOnly) => VTable.GetFunction<MarkPathIDByRequestOnlyDelegate>((int)VTableIndex.MarkPathIDByRequestOnly)(Handle, pathID, requestOnly);
 
     public string RelativePathToFullPath(string fileName, string pathID, int maxLen = 1024, int pathFilter = 0)
     {
         var sb = new StringBuilder(maxLen);
-        var func = VTable.GetFunction<RelativePathToFullPathDelegate>(RELATIVE_TO_FULL_INDEX);
+        var func = VTable.GetFunction<RelativePathToFullPathDelegate>((int)VTableIndex.RelativePathToFullPath);
         func(Handle, fileName, pathID, sb, sb.Capacity, pathFilter, IntPtr.Zero);
         return sb.ToString();
     }
@@ -94,7 +104,7 @@ public class IFileSystem : SourceInterface
     public string GetSearchPath(string pathID, bool getPackFiles, int maxLen = 1024)
     {
         var sb = new StringBuilder(maxLen);
-        var func = VTable.GetFunction<GetSearchPathDelegate>(RELATIVE_TO_FULL_INDEX + 1);
+        var func = VTable.GetFunction<GetSearchPathDelegate>((int)VTableIndex.GetSearchPath);
         func(Handle, pathID, getPackFiles, sb, sb.Capacity);
         return sb.ToString();
     }
