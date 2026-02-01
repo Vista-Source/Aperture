@@ -70,7 +70,7 @@ public class IFileSystem : SourceInterface
         RemoveAllSearchPaths,
         RemoveSearchPaths,
         MarkPathIDByRequestOnly,
-        RelativePathToFullPath = 12,
+        RelativePathToFullPath,
         GetSearchPath
     }
 
