@@ -31,3 +31,27 @@ public class UnitTest1
     }
 }
 ```
+
+There are also type-safe versions of some common interfaces, such as `IFileSystem`.
+```csharp
+public class UnitTest1
+{
+    [ApertureFact("FileSystem_Stdio")]
+    public void Test1()
+    {
+        var fileSystem = new IFileSystem("VFileSystem022");
+
+        Assert.Equal(1, fileSystem.Init());
+
+        Assert.True(fileSystem.IsSteam());
+
+        Assert.Equal(IFileSystem.FilesystemMountRetval.FILESYSTEM_MOUNT_OK, fileSystem.MountSteamContent(243750));
+
+        fileSystem.AddSearchPath("D:\\SteamLibrary\\steamapps\\common\\Source SDK Base 2013 Multiplayer\\hl2mp", "GAME");
+
+        Assert.Equal("d:\\steamlibrary\\steamapps\\common\\source sdk base 2013 multiplayer\\hl2mp\\hl2mp_pak_dir.vpk", fileSystem.RelativePathToFullPath("hl2mp_pak_dir.vpk", "GAME"));
+
+        fileSystem.Shutdown();
+    }
+}
+```
