@@ -4,6 +4,10 @@ An xUnit extension for testing parity between C# and C++ Source Engine modules.
 > [!WARNING]
 > **This is a low-level library.** Abstractions are in place, but a solid understanding of vtables, delegates, and Source Engine internals will help.
 
+## Requirements
+- Valid install of **Steam**
+- Valid install of the target game via Steam (By default: Source SDK Base 2013 Multiplayer)
+
 ## Purpose
 Aperture allows Vista Source to test it's C# implementations of Source Engine modules against the original C++ implementations. This allows us to ensure Vista modules remain behaviourally consistent with the SDK.
 
