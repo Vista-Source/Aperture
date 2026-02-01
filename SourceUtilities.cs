@@ -83,7 +83,7 @@ internal static class SourceUtilities
             var basePath = Path.Combine(library, "common", installDir);
 
             // Linux binaries
-            var linuxBin = Path.Combine(basePath, "bin", "linux64", $"lib{name}.so");
+            var linuxBin = Path.Combine(basePath, "bin", "linux64", $"{name}.so");
             if (File.Exists(linuxBin))
                 return linuxBin;
 
