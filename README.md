@@ -6,7 +6,7 @@ An xUnit extension for testing parity between C# and C++ Source Engine modules.
 
 ## Requirements
 - Valid install of **Steam**
-- Valid install of the target game via Steam (By default: Source SDK Base 2013 Multiplayer)
+- Valid install of the target branch via Steam (By default: Source SDK Base 2013 Multiplayer)
 
 ## Purpose
 Aperture allows Vista Source to test it's C# implementations of Source Engine modules against the original C++ implementations. This allows us to ensure Vista modules remain behaviourally consistent with the SDK.
@@ -47,13 +47,7 @@ public class UnitTest1
 
         Assert.Equal(1, fileSystem.Init());
 
-        Assert.True(fileSystem.IsSteam());
-
         Assert.Equal(IFileSystem.FilesystemMountRetval.FILESYSTEM_MOUNT_OK, fileSystem.MountSteamContent(243750));
-
-        fileSystem.AddSearchPath("D:\\SteamLibrary\\steamapps\\common\\Source SDK Base 2013 Multiplayer\\hl2mp", "GAME");
-
-        Assert.Equal("d:\\steamlibrary\\steamapps\\common\\source sdk base 2013 multiplayer\\hl2mp\\hl2mp_pak_dir.vpk", fileSystem.RelativePathToFullPath("hl2mp_pak_dir.vpk", "GAME"));
 
         fileSystem.Shutdown();
     }
