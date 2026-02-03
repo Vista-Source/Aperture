@@ -1,5 +1,4 @@
-﻿
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Aperture.Interfaces.Default;
@@ -53,6 +52,15 @@ public class IFileSystem : SourceInterface
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     delegate int GetSearchPathDelegate(IntPtr thisPtr, [MarshalAs(UnmanagedType.LPStr)] string pathID, [MarshalAs(UnmanagedType.I1)] bool getPackFiles, StringBuilder dest, int maxLen);
 
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    delegate bool AddPackFileDelegate([MarshalAs(UnmanagedType.LPStr)] string fullPath, [MarshalAs(UnmanagedType.LPStr)] string pathID);
+
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    delegate void RemoveFileDelegate([MarshalAs(UnmanagedType.LPStr)] string relativePath, [MarshalAs(UnmanagedType.LPStr)] string pathID);
+
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    delegate void RenameFileDelegate([MarshalAs(UnmanagedType.LPStr)] string oldPath, [MarshalAs(UnmanagedType.LPStr)] string newPath, [MarshalAs(UnmanagedType.LPStr)] string pathID);
+
 
     #endregion
 
@@ -71,9 +79,11 @@ public class IFileSystem : SourceInterface
         RemoveSearchPaths,
         MarkPathIDByRequestOnly,
         RelativePathToFullPath,
-        GetSearchPath
+        GetSearchPath,
+        AddPackFile,
+        RemoveFile,
+        RenameFile
     }
-
 
     public int Init() => VTable.GetFunction<InitDelegate>((int)VTableIndex.Init)(Handle);
 
@@ -108,4 +118,10 @@ public class IFileSystem : SourceInterface
         func(Handle, pathID, getPackFiles, sb, sb.Capacity);
         return sb.ToString();
     }
+
+    public bool AddPackFile(string fullPath, string pathID) => VTable.GetFunction<AddPackFileDelegate>((int)VTableIndex.AddPackFile)(fullPath, pathID);
+
+    public void RemoveFile(string relativePath, string pathID) => VTable.GetFunction<RemoveFileDelegate>((int)VTableIndex.RemoveFile)(relativePath, pathID);
+
+    public void RenameFile(string oldPath, string newPath, string pathID) => VTable.GetFunction<RenameFileDelegate>((int)VTableIndex.RenameFile)(oldPath, newPath, pathID);
 }
