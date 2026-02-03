@@ -35,7 +35,7 @@ public class IFileSystem : SourceInterface
     delegate void AddSearchPathDelegate(IntPtr thisPtr, [MarshalAs(UnmanagedType.LPStr)] string path, [MarshalAs(UnmanagedType.LPStr)] string pathID, int addType);
 
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-    delegate void RemoveSearchPathDelegate(IntPtr thisPtr, [MarshalAs(UnmanagedType.LPStr)] string path, [MarshalAs(UnmanagedType.LPStr)] string pathID);
+    delegate bool RemoveSearchPathDelegate(IntPtr thisPtr, [MarshalAs(UnmanagedType.LPStr)] string path, [MarshalAs(UnmanagedType.LPStr)] string pathID);
 
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     delegate void RemoveAllSearchPathsDelegate(IntPtr thisPtr);
@@ -95,7 +95,7 @@ public class IFileSystem : SourceInterface
 
     public void AddSearchPath(string path, string pathID, SearchPathAdd addType = SearchPathAdd.PATH_ADD_TO_TAIL) => VTable.GetFunction<AddSearchPathDelegate>((int)VTableIndex.AddSearchPath)(Handle, path, pathID, (int)addType);
 
-    public void RemoveSearchPath(string path, string pathID) => VTable.GetFunction<RemoveSearchPathDelegate>((int)VTableIndex.RemoveSearchPath)(Handle, path, pathID);
+    public bool RemoveSearchPath(string path, string pathID) => VTable.GetFunction<RemoveSearchPathDelegate>((int)VTableIndex.RemoveSearchPath)(Handle, path, pathID);
 
     public void RemoveAllSearchPaths() => VTable.GetFunction<RemoveAllSearchPathsDelegate>((int)VTableIndex.RemoveAllSearchPaths)(Handle);
 
